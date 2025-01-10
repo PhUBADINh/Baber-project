@@ -1,5 +1,6 @@
 // src/pages/Home.js
 import { useEffect, useState } from 'react';
+import Layout from './components/Layout';
 const apiUrl =import.meta.env.VITE_API_URL;
 function Home() {
   const [members,setMembers]=useState([]);
@@ -15,6 +16,10 @@ function Home() {
 
   return (
     <div>
+      <Layout>
+
+      <div className='h-[120rem]'>       
+      
       <h1 className='text-3xl h-[20rem bg-blue-100' >Home Page</h1>
       <p>Welcome to the Home page!</p>
       <ul>
@@ -31,6 +36,9 @@ function Home() {
           <li><a>Item 2</a></li>
         </ul>
       </details>
+      </div>
+      </Layout>
+
     </div>
   );
 }
