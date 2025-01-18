@@ -1,22 +1,28 @@
 from rest_framework import serializers
-from .models import Member
+from .models import Member  # ใช้ model ที่เป็น MongoEngine Document
 from django.contrib.auth.hashers import make_password
 
 
-class MemberSerializers(serializers.ModelSerializer):
-    class Meta:
-        model =Member 
-        fields =['id','first_name','last_name','last_name','nick_name','email','phone_number','password']
-        extra_kwargs ={
-            'password':{'write_only':True},
-        }
+class MemberSerializers(serializers.Serializer):
+    first_name = serializers.CharField(max_length=100)
+    last_name = serializers.CharField(max_length=100)
+    nick_name = serializers.CharField(max_length=50, required=False, allow_blank=True)
+    email = serializers.EmailField()
+    phone_number = serializers.CharField(max_length=15, required=False, allow_blank=True)
+    password = serializers.CharField(write_only=True)
 
-    def validate_password(self,value):
-        if len(value) <8 :
-            raise serializers.ValidationError("password must be at least 8 character long ")
+    def validate_password(self, value):
+        if len(value) < 8:
+            raise serializers.ValidationError("Password must be at least 8 characters long")
         return value
-    
-    def create(self,validate_date): #เข้ารหัสผ่านก่อนบันทึก
-        validate_date['password']=make_password(validate_date['password'])
-        return super().create(validate_date)
-    
+
+    def create(self, validated_data):
+        # ตัดรหัสผ่านออกจาก validated_data ก่อน
+        password = validated_data.pop('password')
+
+        # สร้างสมาชิกใหม่และเข้ารหัสรหัสผ่าน
+        member = Member(**validated_data)
+        member.set_password(password)  # ใช้ฟังก์ชัน set_password ของ MongoEngine Document
+        member.save()
+
+        return member

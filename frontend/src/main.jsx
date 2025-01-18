@@ -8,10 +8,18 @@ import {
 } from "react-router-dom";
 import Home from './Home.jsx'
 import Register from './Register.jsx'
+import Login from './Login.jsx'
+import { AuthProvider } from './contexts/AuthContext.jsx';
+import ProtectedRoute from './components/ProtectedRoute.jsx'
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <App />,
+    element: (
+      <ProtectedRoute>
+        
+        <App />
+      </ProtectedRoute>   
+    )
   },
   {
     path: '/home',
@@ -21,6 +29,10 @@ const router = createBrowserRouter([
     path: '/register',
     element: <Register />,
   },
+  {
+    path: '/login',
+    element: <Login />,
+  },
 
 ]);
 
@@ -28,6 +40,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <RouterProvider router={router} />
-  </StrictMode>,
-)
+    <AuthProvider> {/* Wrap App ด้วย AuthProvider */}
+      <RouterProvider router={router} />
+    </AuthProvider>
+  </StrictMode>
+);

@@ -39,9 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api',
     'rest_framework',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -76,12 +78,13 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+from mongoengine import connect
+connect(
+    config('DB_NAME'),
+    host=config('DB_HOST'),
+    port=config('DB_PORT', cast=int)  # แก้ไขตรงนี้เพื่อแปลงเป็น integer
+)
+
 
 
 # Password validation
@@ -132,17 +135,7 @@ REST_FRAMEWORK = {
     ]
 }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'djongo',
-        'NAME': config('DB_NAME'),  # ชื่อฐานข้อมูลของ MongoDB
-        'ENFORCE_SCHEMA': False,       # ไม่บังคับให้ต้องมี schema
-        'CLIENT': {
-            'host': config('DB_HOST'),  # URL ของ MongoDB (สามารถเปลี่ยน URL ตามเซิร์ฟเวอร์ที่ใช้)
-     
-        }
-    }
-}
+
 
 import os
 
