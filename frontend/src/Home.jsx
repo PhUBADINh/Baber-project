@@ -22,7 +22,7 @@ function Home() {
     "/src/img/12.jpg", 
     "/src/img/13.jpg",
     "/src/img/3.jpg",
-    "/src/img/4.jpg",
+    "/src/img/5.jpg",
   ];
   
   useEffect(() => {
